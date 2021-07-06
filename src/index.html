@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Your Recorder</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="./js/app.js"></script>
+    <script src="./js/recording.js"></script>
+  </head>
+  <body onload="listAllRecordings()">
+    <h2 class="page_title">Your Sound Recorder </h2>
+    <div class="record-section">
+      <div id="record-button">
+        <button id="record" onclick="recording()">Start</button>
+        <button id="cancel" onclick="cancelRecording()" hidden>Cancel</button>
+      </div>
+      <div id="record-timer">00:00:00</div>
+    </div>
+    <div class="show-recordings">
+      <h4>Recordings</h4>
+      <ul id="list-recordings"></ul>
+    </div>
+  </body>
+</html>
