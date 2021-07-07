@@ -5,13 +5,11 @@ var recorder;
 async function recording() {
   if (!recordingState) {
     document.getElementById("record").innerText = "Save";
-    document.getElementById("cancel").removeAttribute("hidden");
     recordingState = true;
     startRecording();
     clockInterval = setInterval(recordingTimer, 1000);
   } else {
     document.getElementById("record").innerText = "Start";
-    document.getElementById("cancel").setAttribute("hidden", "true");
     recordingState = false;
     stopRecording();
     clearInterval(clockInterval);
@@ -32,14 +30,27 @@ async function startRecording() {
         const response = await blobToBase64(blob);
         console.log(response);
         fs.writeFileSync(
-          "/home/admin/Desktop/recordings/file.mp3",
+          `${recordingFolder}/${Date.now()}.webm`,
           Buffer.from(response.replace("data:audio/webm;base64,", ""), "base64")
         );
+        chunk.length = 0;
+        timer = 0;
+        recordingTimer();
+        window.location.reload(true);
       }
     };
     recorder.start(1000);
   } catch (err) {
     console.log("err at recording video: ", err);
+  }
+}
+
+async function stopRecording() {
+  try {
+    recorder.stop();
+    clearInterval(clockInterval);
+  } catch (err) {
+    console.log("err at stoping recording:", err);
   }
 }
 
@@ -52,38 +63,3 @@ const blobToBase64 = (blob) => {
     };
   });
 };
-
-async function stopRecording() {
-  try {
-    recorder.stop();
-    clearInterval(clockInterval);
-  } catch (err) {
-    console.log("err at stoping recording:", err);
-  }
-}
-
-async function cancelRecording() {
-  timer = 0;
-  recordingTimer();
-  document.getElementById("record").innerText = "Start";
-  document.getElementById("cancel").setAttribute("hidden", "true");
-  recordingState = false;
-  recorder.stop();
-  clearInterval(clockInterval);
-}
-
-function createAudioElement(blobUrl) {
-  const downloadEl = document.createElement("a");
-  downloadEl.style = "display: block";
-  downloadEl.innerHTML = "download";
-  downloadEl.download = "audio.webm";
-  downloadEl.href = blobUrl;
-  const audioEl = document.createElement("audio");
-  audioEl.controls = true;
-  const sourceEl = document.createElement("source");
-  sourceEl.src = blobUrl;
-  sourceEl.type = "audio/webm";
-  audioEl.appendChild(sourceEl);
-  document.body.appendChild(audioEl);
-  document.body.appendChild(downloadEl);
-}

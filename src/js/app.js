@@ -42,11 +42,12 @@ async function listAllRecordings() {
 }
 
 async function recordingTimer() {
+  timer += 1;
   let hr = Math.floor(timer / 3600);
   let min = Math.floor((timer - hr * 3600) / 60);
   let sec = timer - hr * 3600 - min * 60;
   if (hr < 10) hr = `0${hr}`;
   if (min < 10) min = `0${min}`;
+  if (sec < 10) sec = `0${sec}`;
   document.getElementById("record-timer").innerText = `${hr}:${min}:${sec}`;
-  timer += 1;
 }
